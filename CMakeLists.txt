@@ -1,5 +1,5 @@
 # project name
-project (dict)
+project (vortaro)
 
 # the oldest stable cmake version we support
 cmake_minimum_required (VERSION 2.6)
@@ -11,9 +11,9 @@ list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 
 # what to call that directory where we install data too
-set (PKGDATADIR "${DATADIR}/dict")
+set (PKGDATADIR "${DATADIR}/vortaro")
 
-set (EXEC_NAME "dict")
+set (EXEC_NAME "vortaro")
 set (VERSION "0.1")
 set (VERSION_INFO "concept")
 
@@ -37,7 +37,7 @@ ensure_vala_version("0.16" MINIMUM)
 # files we want to compile
 include(ValaPrecompile)
 vala_precompile(VALA_C ${EXEC_NAME}
-    src/dict.vala
+    src/app.vala
 
 # tell what libraries to use when compiling
 PACKAGES
@@ -53,4 +53,4 @@ add_executable(${EXEC_NAME} ${VALA_C})
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 
 # install our .desktop file so the Applications menu will see it
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/dict.desktop DESTINATION ${DATADIR}/applications/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/vortaro.desktop DESTINATION ${DATADIR}/applications/)
