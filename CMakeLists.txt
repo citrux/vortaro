@@ -38,6 +38,7 @@ ensure_vala_version("0.16" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C ${EXEC_NAME}
     src/app.vala
+    src/stardict.vala
 
 # tell what libraries to use when compiling
 PACKAGES
