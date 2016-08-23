@@ -40,7 +40,7 @@ public class DictionaryApp : Window {
   private void on_activate () {
     var w = this.word.text;
     var text = "";
-    foreach(var d in dicts) {
+    foreach(var d in this.dicts) {
       var info = d.search(w);
       if (info.length > 0) {text += "<div>" + info + "</div>";}
     }
@@ -52,7 +52,15 @@ public class DictionaryApp : Window {
   }
 
   public void start () {
-    this.dicts += new Dictionary(dicts_dir + "/En_Ru/LingvoUniversalEnRu/");
+    var en_ru_dir = Path.build_path(Path.DIR_SEPARATOR_S, dicts_dir, "En_Ru");
+    var dir = File.new_for_path(en_ru_dir);
+    var enumerator = dir.enumerate_children (FileAttribute.STANDARD_NAME, 0);
+
+    FileInfo file_info;
+    while ((file_info = enumerator.next_file ()) != null) {
+      var fname = file_info.get_name ();
+      this.dicts += new Dictionary(Path.build_path(Path.DIR_SEPARATOR_S, en_ru_dir, fname));
+    }
   }
 
   public static int main (string[] args) {

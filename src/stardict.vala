@@ -83,11 +83,13 @@ class Dictionary : Object {
 
       FileInfo file_info;
       while ((file_info = enumerator.next_file ()) != null) {
-        var fname = file_info.get_name ();
-             if (fname.has_suffix(".idx"))  {buildIndex(basedir + fname);}
-        else if (fname.has_suffix(".dict")) {this.dict = File.new_for_path(basedir + fname);}
-        else if (fname.has_suffix(".ifo"))  {
-          var file = File.new_for_path(basedir + fname);
+        var path = Path.build_path(Path.DIR_SEPARATOR_S, basedir, file_info.get_name ());
+        if (path.has_suffix(".idx")) {
+          buildIndex(path);
+        } else if (path.has_suffix(".dict")) {
+          this.dict = File.new_for_path(path);
+        } else if (path.has_suffix(".ifo")) {
+          var file = File.new_for_path(path);
           FileInputStream @is = file.read ();
           DataInputStream dis = new DataInputStream (@is);
           string line;
