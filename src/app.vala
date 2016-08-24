@@ -51,16 +51,23 @@ public class DictionaryApp : Window {
     this.article.load_html (result, null);
   }
 
-  public void start () {
-    var en_ru_dir = Path.build_path(Path.DIR_SEPARATOR_S, dicts_dir, "En_Ru");
-    var dir = File.new_for_path(en_ru_dir);
-    var enumerator = dir.enumerate_children (FileAttribute.STANDARD_NAME, 0);
+  public async void load_dicts () {
+    SourceFunc callback = load_dicts.callback;
+    ThreadFunc<void*> run = () => {
+      var en_ru_dir = Path.build_path(Path.DIR_SEPARATOR_S, dicts_dir, "En_Ru");
+      var dir = File.new_for_path(en_ru_dir);
+      var enumerator = dir.enumerate_children (FileAttribute.STANDARD_NAME, 0);
 
-    FileInfo file_info;
-    while ((file_info = enumerator.next_file ()) != null) {
-      var fname = file_info.get_name ();
-      this.dicts += new Dictionary(Path.build_path(Path.DIR_SEPARATOR_S, en_ru_dir, fname));
-    }
+      FileInfo file_info;
+      while ((file_info = enumerator.next_file ()) != null) {
+        var fname = file_info.get_name ();
+        this.dicts += new Dictionary(Path.build_path(Path.DIR_SEPARATOR_S, en_ru_dir, fname));
+      }
+      Idle.add((owned) callback);
+      return null;
+    };
+    Thread.create<void*>(run, false);
+    yield;
   }
 
   public static int main (string[] args) {
@@ -69,7 +76,7 @@ public class DictionaryApp : Window {
     var app = new DictionaryApp ();
 
     app.show_all ();
-    app.start ();
+    app.load_dicts();
     Gtk.main ();
 
     return 0;
