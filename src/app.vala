@@ -10,9 +10,10 @@ public class DictionaryApp : Window {
 
   private Entry word;
   private WebView article;
+  private Spinner spinner;
+  private Label status;
 
   public DictionaryApp () {
-    this.title = DictionaryApp.TITLE;
     set_default_size (800, 600);
 
     create_widgets ();
@@ -21,14 +22,24 @@ public class DictionaryApp : Window {
   }
 
   private void create_widgets () {
+    var headerbar = new HeaderBar();
+    headerbar.set_title(TITLE);
+    headerbar.set_show_close_button(true);
+    set_titlebar(headerbar);
     this.word = new Entry ();
     this.article = new WebView ();
+    this.status = new Label("");
+    this.spinner = new Spinner();
     var scrolled_window = new ScrolledWindow (null, null);
     scrolled_window.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
     scrolled_window.add (this.article);
-    var vbox = new VBox(false, 0); //new Box (Gtk.Orientation.VERTICAL, 0);
+    var status_bar = new ActionBar ();
+    status_bar.pack_start(spinner);
+    status_bar.add(status);
+    var vbox = new Box (Gtk.Orientation.VERTICAL, 0);
     vbox.pack_start (this.word, false, true, 0);
-    vbox.add (scrolled_window);
+    vbox.pack_start (scrolled_window, true, true, 0);
+    vbox.pack_start (status_bar, false, true, 0);
     add (vbox);
   }
 
@@ -67,7 +78,11 @@ public class DictionaryApp : Window {
       return null;
     };
     Thread.create<void*>(run, false);
+    this.status.label = "Loading dictionaries...";
+    this.spinner.start();
     yield;
+    this.status.label = "All dictionaries loaded!";
+    this.spinner.stop();
   }
 
   public static int main (string[] args) {
