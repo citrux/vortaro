@@ -12,6 +12,7 @@ public class DictionaryApp : Window {
   private WebView article;
   private Spinner spinner;
   private Label status;
+  private string css;
 
   public DictionaryApp () {
     set_default_size (800, 600);
@@ -19,6 +20,26 @@ public class DictionaryApp : Window {
     create_widgets ();
     connect_signals ();
     this.word.grab_focus ();
+    this.css = "div {"
+             + "position: relative;"
+             + "padding-top: 1.5em;"
+             + "padding-bottom: 1.5em;"
+             + "border-bottom: 1px solid #aaa;"
+             + "}"
+             + "div:last-child {"
+             + "border-bottom: none;"
+             + "}"
+             + ".tr:before {"
+             + "content: '[';"
+             + "}"
+             + ".tr:after {"
+             + "content: ']';"
+             + "}"
+             + ".dict {"
+             + "position: absolute;"
+             + "top: 0.2em;"
+             + "left: 50%;"
+             + "}";
   }
 
   private void create_widgets () {
@@ -53,12 +74,12 @@ public class DictionaryApp : Window {
     var text = "";
     foreach(var d in this.dicts) {
       var info = d.search(w);
-      if (info.length > 0) {text += "<div>" + info + "</div>";}
+      if (info.length > 0) {text += info;}
     }
     if (text.length == 0) {
       text = "<i>В словарях нет такого слова</i>";
     }
-    var result = "<!doctype html><html><body>" + text + "</body></html>";
+    var result = @"<!doctype html><html><body><style>$css</style>$text</body></html>";
     this.article.load_html (result, null);
   }
 

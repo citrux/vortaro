@@ -73,6 +73,12 @@ class Dictionary : Object {
       raw += 0;
       result = (string) raw;
     } catch {}
+    var open_tag = new Regex("<(\\w+)>");
+    var close_tag = new Regex("</\\w+>");
+    result = open_tag.replace(result, -1, 0, "<span class='\\1'>");
+    result = close_tag.replace(result, -1, 0, "</span>");
+    result = result.replace("\n","<br />");
+    result = @"<div><span class='dict'>$name</span>$result</div>";
     return result;
   }
 
